@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -100,8 +101,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final isLandscape =
-        MediaQuery.of(context).orientation == Orientation.landscape;
+    final mediaQuery = MediaQuery.of(context);
+    final isLandscape = mediaQuery.orientation == Orientation.landscape;
     final appBar = AppBar(
       title: Text("Expense Tracker"),
       actions: <Widget>[
@@ -112,9 +113,9 @@ class _HomePageState extends State<HomePage> {
       ],
     );
     final txListWidget = Container(
-        height: (MediaQuery.of(context).size.height -
+        height: (mediaQuery.size.height -
             appBar.preferredSize.height -
-            MediaQuery.of(context).padding.top),
+            mediaQuery.padding.top),
         child: TransactionList(_userTransactions, _deleteTransaction));
     return Scaffold(
       appBar: appBar,
@@ -130,7 +131,7 @@ class _HomePageState extends State<HomePage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Text('Show Chart'),
-                          Switch(
+                          Switch.adaptive(
                               value: _showChart,
                               onChanged: (val) {
                                 setState(() {
@@ -141,26 +142,28 @@ class _HomePageState extends State<HomePage> {
                       ),
                     if (!isLandscape)
                       Container(
-                          height: (MediaQuery.of(context).size.height -
+                          height: (mediaQuery.size.height -
                                   appBar.preferredSize.height -
-                                  MediaQuery.of(context).padding.top) *
+                                  mediaQuery.padding.top) *
                               0.35,
                           child: Chart(_recentTransactions)),
                     if (!isLandscape) txListWidget,
                     if (isLandscape)
                       _showChart
                           ? Container(
-                              height: (MediaQuery.of(context).size.height -
+                              height: (mediaQuery.size.height -
                                       appBar.preferredSize.height -
-                                      MediaQuery.of(context).padding.top) *
+                                      mediaQuery.padding.top) *
                                   0.7,
                               child: Chart(_recentTransactions))
                           : txListWidget
                   ]))),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () => _startAddNewTransaction(context),
-      ),
+      floatingActionButton: Platform.isIOS
+          ? Container()
+          : FloatingActionButton(
+              child: Icon(Icons.add),
+              onPressed: () => _startAddNewTransaction(context),
+            ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
