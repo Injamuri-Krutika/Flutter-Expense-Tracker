@@ -6,7 +6,7 @@ class AdaptiveFlatButton extends StatelessWidget {
   final Function _presentDatePicker;
   final String text;
 
-  AdaptiveFlatButton(this.text, this._presentDatePicker);
+  const AdaptiveFlatButton(this.text, this._presentDatePicker);
 
   @override
   Widget build(BuildContext context) {

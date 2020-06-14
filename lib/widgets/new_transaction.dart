@@ -8,7 +8,7 @@ import './adaptive_button.dart';
 class NewTransaction extends StatefulWidget {
   final Function callBackFunction;
 
-  NewTransaction(this.callBackFunction);
+  const NewTransaction(this.callBackFunction);
 
   @override
   _NewTransactionState createState() => _NewTransactionState();

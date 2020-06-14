@@ -13,7 +13,7 @@ class TransactionList extends StatelessWidget {
             ? LayoutBuilder(builder: (ctx, constraints) {
                 return Column(
                   children: <Widget>[
-                    Text(
+                    const Text(
                       'No transactions available',
                       style: TextStyle(
                           fontFamily: 'Opensans', fontWeight: FontWeight.bold),
@@ -54,11 +54,11 @@ class TransactionList extends StatelessWidget {
                       trailing: MediaQuery.of(context).size.width > 420
                           ? FlatButton.icon(
                               onPressed: () => deleteTx(transactions[idx].id),
-                              icon: Icon(Icons.delete),
+                              icon: const Icon(Icons.delete),
                               textColor: Theme.of(context).errorColor,
-                              label: Text('Delete'))
+                              label: const Text('Delete'))
                           : IconButton(
-                              icon: Icon(Icons.delete),
+                              icon: const Icon(Icons.delete),
                               color: Theme.of(context).errorColor,
                               onPressed: () => deleteTx(transactions[idx].id),
                             ),
