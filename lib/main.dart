@@ -100,11 +100,51 @@ class _HomePageState extends State<HomePage> {
         });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
-    final isLandscape = mediaQuery.orientation == Orientation.landscape;
-    final PreferredSizeWidget appBar = Platform.isIOS
+  List<Widget> _buildLandsacpeContent(
+    Widget txListWidget,
+    MediaQueryData mediaQuery,
+    AppBar appBar,
+  ) {
+    return [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text('Show Chart'),
+          Switch.adaptive(
+              value: _showChart,
+              onChanged: (val) {
+                setState(() {
+                  _showChart = val;
+                });
+              })
+        ],
+      ),
+      _showChart
+          ? Container(
+              height: (mediaQuery.size.height -
+                      appBar.preferredSize.height -
+                      mediaQuery.padding.top) *
+                  0.7,
+              child: Chart(_recentTransactions))
+          : txListWidget
+    ];
+  }
+
+  List<Widget> _buildPotraitContent(
+      MediaQueryData mediaQuery, AppBar appBar, Widget txListWidget) {
+    return [
+      Container(
+          height: (mediaQuery.size.height -
+                  appBar.preferredSize.height -
+                  mediaQuery.padding.top) *
+              0.35,
+          child: Chart(_recentTransactions)),
+      txListWidget
+    ];
+  }
+
+  Widget _buildAppBar() {
+    return Platform.isIOS
         ? CupertinoNavigationBar(
             middle: Text("Expense Tracker"),
             trailing: Row(
@@ -126,6 +166,13 @@ class _HomePageState extends State<HomePage> {
               )
             ],
           );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final isLandscape = mediaQuery.orientation == Orientation.landscape;
+    final PreferredSizeWidget appBar = _buildAppBar();
     final txListWidget = Container(
         height: (mediaQuery.size.height -
             appBar.preferredSize.height -
@@ -140,36 +187,11 @@ class _HomePageState extends State<HomePage> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       if (isLandscape)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text('Show Chart'),
-                            Switch.adaptive(
-                                value: _showChart,
-                                onChanged: (val) {
-                                  setState(() {
-                                    _showChart = val;
-                                  });
-                                })
-                          ],
-                        ),
+                        ..._buildLandsacpeContent(
+                            txListWidget, mediaQuery, appBar),
                       if (!isLandscape)
-                        Container(
-                            height: (mediaQuery.size.height -
-                                    appBar.preferredSize.height -
-                                    mediaQuery.padding.top) *
-                                0.35,
-                            child: Chart(_recentTransactions)),
-                      if (!isLandscape) txListWidget,
-                      if (isLandscape)
-                        _showChart
-                            ? Container(
-                                height: (mediaQuery.size.height -
-                                        appBar.preferredSize.height -
-                                        mediaQuery.padding.top) *
-                                    0.7,
-                                child: Chart(_recentTransactions))
-                            : txListWidget
+                        ..._buildPotraitContent(
+                            mediaQuery, appBar, txListWidget),
                     ]))));
     return Platform.isIOS
         ? CupertinoPageScaffold(child: pageBody)
